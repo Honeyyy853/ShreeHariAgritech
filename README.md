@@ -118,26 +118,56 @@ The project utilizes **Razorpay** for the checkout flow. Currently, it is config
 
 ## 📸 Screenshots
 
-### 🏠 Home Page
-*(A welcoming banner with highlighted categories and featured agricultural products.)*
+---
 
-### 🛍️ Product Listing
-*(A clean grid of products containing dynamic pricing, titles, and 'Add to Cart' actions.)*
+## 🛠️ Admin Panel
 
-### 🔍 Product Filtering
-*(The dynamic sidebar filtering mechanism in action, narrowing down yields.)*
+<p align="center">
+  <img src="screenshots/admin.png" width="45%" />
+  <img src="screenshots/addProduct.png" width="45%" />
+</p>
 
-### 💳 Payment Page
-*(The Razorpay pop-up integrated seamlessly for final checkout.)*
+<p align="center">
+  <img src="screenshots/manageProduct.png" width="45%" />
+  <img src="screenshots/manageOrder.png" width="45%" />
+</p>
 
-### 📊 Admin Dashboard
-*(The central administrative hub showing overall metrics, charts, and vital stats.)*
+<p align="center">
+  <img src="screenshots/managePayment.png" width="45%" />
+  <img src="screenshots/manageOffer.png" width="45%" />
+</p>
 
-### 📦 Order Management
-*(A tabular view for admins to process, dispatch, and mark orders as delivered.)*
+<p align="center">
+  <img src="screenshots/manageInquiry.png" width="45%" />
+</p>
 
-### 👤 User Profile
-*(The customer account page detailing personal info and previous purchases.)*
+---
+
+## 👤 User Panel
+
+<p align="center">
+  <img src="screenshots/home.png" width="45%" />
+  <img src="screenshots/products.png" width="45%" />
+</p>
+<p align="center">
+  <img src="screenshots/profile.png" width="45%" />
+  <img src="screenshots/contact.png" width="45%" />
+</p>
+<p align="center">
+  <img src="screenshots/cart.png" width="45%" />
+  <img src="screenshots/checkout.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="screenshots/payment.png" width="45%" />
+  <img src="screenshots/invoice.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="screenshots/orders.png" width="45%" />
+  <img src="screenshots/orderHistory.png" width="45%" />
+</p>
+
 
 ---
 
