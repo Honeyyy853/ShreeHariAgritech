@@ -6,78 +6,94 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
 
 require '../PHPMailer/PHPMailer/src/PHPMailer.php';
-
 require '../PHPMailer/PHPMailer/src/SMTP.php';
 require '../PHPMailer/PHPMailer/src/Exception.php';
 
+// 🔐 ENV variables
+$mailUser = getenv('MAIL_USERNAME');
+$mailPass = getenv('MAIL_PASSWORD');
+$mailFrom = getenv('MAIL_FROM');
 
-$email = $_POST['email'] ?? 0;
+$email = $_POST['email'] ?? '';
 
-// $pwd = "123456";
+if (empty($email)) {
+    echo json_encode([
+        "status" => false,
+        "message" => "Email is required"
+    ]);
+    exit;
+}
 
-$pwd = password_hash("123456", PASSWORD_DEFAULT);
-
+// 🔐 Generate secure random password (NOT 123456)
+$newPasswordPlain = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 8);
+$newPasswordHash  = password_hash($newPasswordPlain, PASSWORD_DEFAULT);
 
 try {
-    // Create a new PHPMailer instance
     $mail = new PHPMailer(true);
-    // Server settings
+
+    // SMTP Config
     $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com'; // Correct Gmail SMTP server
+    $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'rathodhoney852003@gmail.com'; // Replace with your email
-    $mail->Password   = 'chbrvsbscagvgath';   // Use your app password securely
+    $mail->Username   = $mailUser;
+    $mail->Password   = $mailPass;
     $mail->SMTPSecure = 'tls';
     $mail->Port       = 587;
-     
-    // Recipients
-    $mail->setFrom('rathodhoney852003@gmail.com', 'Honey');
+
+    $mail->setFrom($mailFrom, 'ShreeHariAgriTech');
     $mail->addAddress($email);
 
-    // Email content
     $mail->isHTML(true);
-    $mail->Subject = 'Welcome to Our Platform!';
-    $mail->Body = " 
+    $mail->Subject = 'Your Account Password Reset';
 
-```
-    <p>Hi <strong>! your default pwd is 123456 , after login please change your pwd.</strong>,</p>
+    $mail->Body = "
+    <div style='font-family:Arial;background:#f4f6f8;padding:20px'>
+      <div style='max-width:600px;margin:auto;background:#fff;border-radius:12px;padding:20px'>
+        
+        <h2 style='color:#198754'>Password Reset 🔐</h2>
 
-    <strong>Organic Store Team</strong></p>
-</div>
-</div>
-```
+        <p>Hello 👋</p>
 
-";
+        <p>Your new temporary password is:</p>
+
+        <div style='background:#f1f1f1;padding:15px;border-radius:8px;font-size:18px;font-weight:bold;text-align:center'>
+            $newPasswordPlain
+        </div>
+
+        <p>Please login and change your password immediately.</p>
+
+        <p style='color:red'><b>Do not share this password with anyone.</b></p>
+
+        <hr>
+
+        <p style='font-size:12px;color:#777'>ShreeHariAgriTech Team</p>
+
+      </div>
+    </div>
+    ";
 
     $mail->send();
 
-    $response["Status"] = "Success";
+    // ✅ Secure DB update (Prepared Statement)
+    $stmt = $conn->prepare("UPDATE tbl_users SET password = ? WHERE email = ?");
+    $stmt->bind_param("ss", $newPasswordHash, $email);
+    $stmt->execute();
 
-    $response["MailStatus"] = "Welcome email sent successfully.";
+    echo json_encode([
+        "status" => true,
+        "message" => "Password reset successfully. Email sent."
+    ]);
+
 } catch (Exception $e) {
-    $response["Status"] = "Fail";
+    echo json_encode([
+        "status" => false,
+        "message" => "Failed to send email"
+    ]);
+}
 
-    $response["MailStatus"] = "Failed to send welcome email. Error: {$mail->ErrorInfo}";
-}
-$check = "UPDATE tbl_users 
-SET password = '$pwd'
-WHERE email = '$email'";
-$result = mysqli_query($conn, $check);
-if ($result) {
-    echo json_encode([
-        "status" => "true",
-        "message" => "pwd updated successfully"
-    ]);
-} else {
-    echo json_encode([
-        "status" => "false",
-        "message" => mysqli_error($conn)
-    ]);
-}
 $conn->close();
+?>
