@@ -10,6 +10,11 @@ require './PHPMailer/PHPMailer/src/PHPMailer.php';
 require './PHPMailer/PHPMailer/src/SMTP.php';
 require './PHPMailer/PHPMailer/src/Exception.php';
 
+// 🔐 ENV variables
+$mailUser = getenv('MAIL_USERNAME');
+$mailPass = getenv('MAIL_PASSWORD');
+$mailFrom = getenv('MAIL_FROM');
+
 $response = array();
 
 $email = $_POST["email"] ?? "";
@@ -31,12 +36,12 @@ try {
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'rathodhoney852003@gmail.com';
-    $mail->Password   = 'chbrvsbscagvgath';
+    $mail->Username   = $mailUser;
+    $mail->Password   = $mailPass;
     $mail->SMTPSecure = 'tls';
     $mail->Port       = 587;
 
-    $mail->setFrom('rathodhoney852003@gmail.com', 'Organic Store');
+    $mail->setFrom($mailFrom, 'ShreeHariAgriTech');
     $mail->addAddress($email);
     $mail->isHTML(true);
 
@@ -44,25 +49,23 @@ try {
 
         // 🎉 REGISTER
         case "register":
-            $mail->Subject = "Welcome to Organic Store, $name!";
+            $mail->Subject = "Welcome to ShreeHariAgriTech, $name!";
             $mail->Body = "
             <div style='font-family:Arial;background:#f4f6f8;padding:20px'>
               <div style='max-width:600px;margin:auto;background:#fff;border-radius:12px;overflow:hidden'>
                 
                 <div style='background:#198754;color:#fff;padding:20px;text-align:center'>
-                  <h2>🌿 Welcome to Organic Store</h2>
+                  <h2>🌿 Welcome to ShreeHariAgriTech</h2>
                 </div>
     
                 <div style='padding:20px'>
                   <h3>Hello $name 👋</h3>
                   <p>Thanks for joining us! We're excited to have you.</p>
-                  <p>Explore fresh, natural & eco-friendly products 🌱</p>
-    
-                  
+                  <p>Explore premium agricultural products 🌱</p>
                 </div>
     
                 <div style='background:#f1f1f1;padding:10px;text-align:center;font-size:12px'>
-                  Organic Store Team
+                  ShreeHariAgriTech Team
                 </div>
     
               </div>
@@ -72,7 +75,7 @@ try {
 
         // 🔐 LOGIN
         case "login":
-            $mail->Subject = "Login Alert - Organic Store";
+            $mail->Subject = "Login Alert - ShreeHariAgriTech";
             $mail->Body = "
             <div style='font-family:Arial;background:#f4f6f8;padding:20px'>
               <div style='max-width:600px;margin:auto;background:#fff;border-radius:12px'>
@@ -82,7 +85,7 @@ try {
                 </div>
     
                 <div style='padding:20px'>
-                  <h3>Hello!!</h3>
+                  <h3>Hello $name 👋</h3>
                   <p>You have successfully logged into your account.</p>
                   <p>If this wasn't you, please secure your account immediately.</p>
                 </div>
@@ -94,7 +97,7 @@ try {
 
         // 📦 ORDER
         case "order":
-            $mail->Subject = " Order Confirmed!";
+            $mail->Subject = "Order Confirmed!";
             $mail->Body = "
             <div style='font-family:Arial;background:#f4f6f8;padding:20px'>
               <div style='max-width:600px;margin:auto;background:#fff;border-radius:12px'>
@@ -104,12 +107,12 @@ try {
                 </div>
     
                 <div style='padding:20px'>
-                  <h3>Hi!!</h3>
+                  <h3>Hi $name 👋</h3>
                   <p>Your order has been placed successfully.</p>
     
                   <div style='background:#f8f9fa;padding:15px;border-radius:8px;margin:15px 0'>
-                    🚚 <b>Delivery Status:</b> Processing <br>
-                    📍 <b>Shipping:</b> Will be delivered soon
+                    🚚 <b>Status:</b> Processing <br>
+                    📍 <b>Delivery:</b> Will be delivered soon
                   </div>
     
                   <p>Thanks for shopping with us ❤️</p>
@@ -132,12 +135,12 @@ try {
                 </div>
     
                 <div style='padding:20px'>
-                  <h3>Hi!!</h3>
+                  <h3>Hi $name 👋</h3>
                   <p>Your payment has been successfully processed.</p>
     
                   <div style='background:#e9f7ef;padding:15px;border-radius:8px;margin:15px 0'>
                     ✔ Transaction completed <br>
-                    ✔ Your order is now confirmed
+                    ✔ Order confirmed
                   </div>
     
                   <p>Thank you for choosing us 🙌</p>
@@ -158,9 +161,11 @@ try {
         "Status" => "Success",
         "Message" => "$type mail sent"
     ]);
+
 } catch (Exception $e) {
     echo json_encode([
         "Status" => "Fail",
-        "Message" => $mail->ErrorInfo
+        "Message" => "Mail sending failed"
     ]);
 }
+?>
