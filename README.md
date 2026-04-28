@@ -142,10 +142,9 @@ The project utilizes **Razorpay** for the checkout flow. Currently, it is config
 ---
 
 ## 🚀 Future Improvements
-- **Invoice Generation:** Automatic PDF invoice downloads upon successful capture of payment.
-- **Email Notifications:** SMTP integration for order updates and user registrations.
-- **Advanced Authentication:** Implement JWT based secure routing for React.
-- **Dockerization:** Containerizing the whole stack for one-click environment setups.
+- **Implement chat support / chatbot integration for instant customer assistance.**
+- **Add wishlist & smart cart features with dynamic pricing and offers.**
+- **Improve security using JWT authentication, rate limiting, and encrypted APIs.**
 
 ---
 
