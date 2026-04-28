@@ -1,0 +1,373 @@
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
+import Help from "./modules/Help";
+
+// Pages
+import Login from "./modules/auth/Login";
+import Dashboard from "./modules/dashboard/Dashboard";
+import EditHerbs from "./modules/Herbs/EditHerbs";
+import EditDehydratedFruits from "./modules/Dehydrated Fruit/EditDehydratedFruits";
+import ListCategories from "./modules/categories/ListCategories";
+import AddCategory from "./modules/categories/AddCategory";
+// import EditCategory from "./modules/categories/EditCategory";
+import EditDehydratedVegetables from "./modules/Dehydtared Vegetables/EditDehydratedVegetables";
+import Orders from "./modules/orders/Orders";
+// import OrderDetails from './modules/orders/OrderDetails';
+import Users from "./modules/users/Users";
+import Inquiries from "./modules/users/Inquiries";
+import Payments from "./modules/orders/Payments";
+import Settings from "./modules/settings/Settings";
+import ListHerbs from "./modules/Herbs/ListHerbs";
+import ListDehydratedFruits from "./modules/Dehydrated Fruit/ListDehydratedFruits";
+import ListDehydratedVegetables from "./modules/Dehydtared Vegetables/ListDehydratedVegetables";
+import Offers from "./modules/users/offers";
+import Feedback from "./modules/users/feedback";
+import AddHerbs from "./modules/Herbs/AddHerbs";
+import AddDehydratedFruits from "./modules/Dehydrated Fruit/AddDehydratedFruits";
+import AddDehydratedVegetables from "./modules/Dehydtared Vegetables/AddDehydratedVegetables";
+import AddOffers from "./modules/users/AddOffers";
+import EditOffers from "./modules/users/EditOffers";
+/**
+ * Protected Route Component
+ * Checks if user is authenticated before allowing access
+ */
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("admin");
+  return token ? children : <Navigate to="/login" replace />;
+};
+
+/**
+ * Public Route Component
+ * Redirects to dashboard if already logged in
+ */
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem("admin");
+  return token ? <Navigate to="/" replace /> : children;
+};
+
+/**
+ * Main Layout Component
+ * Wraps protected routes with sidebar and topbar
+ */
+const Layout = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    // On mobile (< 1024px), toggle visibility
+    // On desktop (>= 1024px), toggle collapsed state
+    const isMobile = window.innerWidth < 1024;
+    if (isMobile) {
+      setSidebarOpen(!sidebarOpen);
+    } else {
+      setSidebarCollapsed(!sidebarCollapsed);
+    }
+  };
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
+
+  // Handle window resize to sync states
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        // On desktop, sidebar should always be visible
+        setSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Check on mount
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={closeSidebar}
+        isCollapsed={sidebarCollapsed}
+      />
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
+        }`}
+      >
+        <Topbar
+          onMenuClick={toggleSidebar}
+          sidebarCollapsed={sidebarCollapsed}
+        />
+        <main className="flex-1 overflow-y-auto pt-16 page-transition">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Main App Component
+ * Sets up routing and authentication
+ */
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        {/* <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ListProducts />
+              </Layout>
+            </ProtectedRoute>
+          }
+        /> */}
+        <Route
+          path="/manage-Herbs"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ListHerbs />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-Herbs"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AddHerbs />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-DehydratedFruits"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AddDehydratedFruits />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manage-DehydratedFruits"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ListDehydratedFruits />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-DehydratedVegetables"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AddDehydratedVegetables />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manage-DehydratedVegetables"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ListDehydratedVegetables />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ListCategories />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-category"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AddCategory />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        {/* <Route
+          path="/edit-category/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <EditCategory />
+              </Layout>
+            </ProtectedRoute>
+          }
+        /> */}
+        <Route
+          path="/edit-Herbs/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <EditHerbs />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-DehydratedFruits/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <EditDehydratedFruits />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-DehydratedVegetables/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <EditDehydratedVegetables />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Orders />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Users />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inquiries"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Inquiries />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/feedback"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Feedback />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payments"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Payments />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/addOffers"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AddOffers />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editOffer/:id"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <EditOffers />
+            </Layout>
+          </ProtectedRoute>
+        }
+        />
+        <Route
+          path="/offers"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Offers />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/help"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Help />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        {/* Catch all - redirect to dashboard */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;

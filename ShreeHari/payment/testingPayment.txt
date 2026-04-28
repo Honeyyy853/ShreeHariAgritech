@@ -1,0 +1,103 @@
+import axios from axios;
+import { useEffect, useState } from react;
+
+function TestCity() {
+
+  const [cities, setCities] = useState([]);
+
+
+
+  useEffect(() = {
+
+    alert(hi)
+
+    axios.post(httplocalhostShreyApiviewCity.php)
+      .then((response) = {
+
+        if (response.data.status ===true) {
+          setCities(response.data.data);
+        } else {
+          alert(No data found);
+        }
+
+      })
+      .catch((error) = {
+        console.error(API Error, error);
+      });
+
+  }, []);  👈 important (run once)
+
+
+  
+
+
+const displayRazorpay = async () = {
+
+   call backend api (order create)
+  const res = await axios.get(httplocalhostReactJSAPIEMAILAPIcreateorder.php);
+
+  const data = res.data;
+
+  const options = {
+    key rzp_test_aro7DmNCYha043,
+    amount data.amount,
+    currency INR,
+    order_id data.id,
+    name Demo Company,
+    description Test Payment,
+    handler function (response) {
+      alert(Payment Successful  + response.razorpay_payment_id);
+    },
+     prefill {
+       name Test User,
+       email test@mail.com,
+       contact 9999999999
+     },
+    theme {
+      color #3399cc
+    }
+  };
+
+  const paymentObject = new window.Razorpay(options);
+  paymentObject.open();
+};
+
+  
+  return (
+    
+      h1City Listh1
+
+     button onClick={displayRazorpay}
+  Pay Now
+button
+
+      table border=1 cellPadding=10
+        thead
+          tr
+            thCity IDth
+            thCity Nameth
+            thStateth
+            thCountryth
+          tr
+        thead
+
+        tbody
+          {cities.map((city, index) = (
+            tr key={index}
+              td{city.city_id}td
+              td{city.city_name}td
+              td{city.state_name}td
+              td{city.country_name}td
+                td500td
+            tr
+          ))}
+        tbody
+      table
+
+
+      { button onclSendMailbutton }
+    
+  );
+}
+
+export default TestCity;
