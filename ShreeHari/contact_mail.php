@@ -13,6 +13,12 @@ require './PHPMailer/PHPMailer/src/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 
+// Load ENV variables
+$mailUser = getenv('MAIL_USERNAME');
+$mailPass = getenv('MAIL_PASSWORD');
+$mailFrom = getenv('MAIL_FROM');
+$mailTo   = getenv('MAIL_TO');
+
 // Get JSON data
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -86,18 +92,17 @@ try {
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'rathodhoney852003@gmail.com';
-    $mail->Password   = 'chbrvsbscagvgath'; // ⚠️ later use ENV
+    $mail->Username   = $mailUser;
+    $mail->Password   = $mailPass;
     $mail->SMTPSecure = 'tls';
     $mail->Port       = 587;
 
-    $mail->setFrom('rathodhoney852003@gmail.com', 'Shree Hari Agritech');
-    $mail->addAddress('rathodhoney852003@gmail.com');
+    $mail->setFrom($mailFrom, 'ShreeHariAgriTech');
+    $mail->addAddress($mailTo);
 
     $mail->isHTML(true);
     $mail->Subject = "New Inquiry Received";
 
-    // ✨ PROFESSIONAL EMAIL DESIGN
     $mail->Body = "
     <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #eee;border-radius:10px;overflow:hidden'>
         
@@ -123,18 +128,16 @@ try {
 
     $mail->send();
 
-    // ✅ SUCCESS RESPONSE (frontend ke liye better)
     echo json_encode([
         "status" => true,
-        "message" => "✅ Inquiry sent successfully! We will contact you soon."
+        "message" => "✅ Inquiry sent successfully!"
     ]);
 
 } catch (Exception $e) {
 
     echo json_encode([
         "status" => false,
-        "message" => "❌ Failed to process request. Please try again later."
-        // "error" => $e->getMessage() // debugging ke liye enable kar sakta hai
+        "message" => "❌ Failed to process request."
     ]);
 }
 
